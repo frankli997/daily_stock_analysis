@@ -3199,6 +3199,11 @@ class GeminiAnalyzer:
                     requested_temperature,
                     model_list=recovery_model_list,
                 )
+                # DeepSeek structured analysis: force native JSON Output mode.
+                # The stock-analysis path already supplies a JSON response validator,
+                # so only enable this for requests that explicitly require JSON.
+                if response_validator is not None and str(model).lower().startswith("deepseek/"):
+                call_kwargs["response_format"] = {"type": "json_object"}
                 route_context = build_provider_cache_route_context(
                     model=model,
                     provider=usage_provider,
